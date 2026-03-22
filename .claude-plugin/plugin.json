@@ -5,5 +5,8 @@
   "author": {
     "name": "chungchihhan"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "hooks": "./hooks/hooks.json"
 }

@@ -1,0 +1,10 @@
+{
+  "name": "step-back",
+  "version": "1.0.0",
+  "description": "Claude Code plugin: step back from fix-it loops",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "license": "MIT"
+}
