@@ -1,0 +1,9 @@
+{
+  "name": "step-back",
+  "version": "1.0.0",
+  "description": "A plugin that detects fix-it loops, spawns a meta-agent for root cause analysis, confirms with the user, and injects structured advice back into the session.",
+  "author": {
+    "name": "chungchihhan"
+  },
+  "license": "MIT"
+}

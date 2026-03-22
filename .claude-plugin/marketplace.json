@@ -1,0 +1,21 @@
+{
+  "name": "step-back",
+  "owner": {
+    "name": "chungchihhan"
+  },
+  "metadata": {
+    "description": "Plugins for managing Claude Code sessions",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "step-back",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/chungchihhan/step-back.git"
+      },
+      "description": "A plugin that detects fix-it loops, spawns a meta-agent for root cause analysis, confirms with the user, and injects structured advice back into the session.",
+      "version": "1.0.0"
+    }
+  ]
+}
