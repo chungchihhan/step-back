@@ -53,8 +53,9 @@ export function processHookInput(input) {
 
   if (!detection.triggered) return response;
 
-  // Frustration detected — nudge user to try /step-back
-  response.systemMessage = pickNudge();
+  // Frustration detected — block response and nudge user to try /step-back
+  response.continue = false;
+  response.stopReason = pickNudge();
 
   return response;
 }
@@ -65,7 +66,6 @@ const NUDGES = [
   'Same fix, same result. /step-back can spot what you\'re both missing.',
   'Looks like a loop. /step-back brings fresh eyes from a clean context.',
   'Three strikes. Maybe time to /step-back and rethink the approach?',
-  'Tried that already. /step-back will find the pattern you\'re not seeing.',
   'The definition of insanity... Type /step-back for a second opinion.',
   'Plot twist: the bug might not be where you think. Try /step-back.',
   'Sometimes you need to zoom out. /step-back does exactly that.',
