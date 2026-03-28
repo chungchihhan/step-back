@@ -53,8 +53,8 @@ export function processHookInput(input) {
 
   if (!detection.triggered) return response;
 
-  // Frustration detected — notify user to invoke /step-back
-  response.systemMessage = `[step-back] Frustration loop detected (${detection.signalCount} signals since last progress). Type /step-back to get a fresh root-cause analysis from a separate agent.`;
+  // Frustration detected — instruct Claude to invoke the /step-back skill
+  response.systemMessage = `CRITICAL: A frustration loop has been detected (${detection.signalCount} frustration signals without progress). You MUST invoke the /step-back skill immediately using the Skill tool (skill: "step-back"). Do NOT attempt another fix. Do NOT ask for more information. Invoke the skill NOW — it will spawn a separate agent for root cause analysis.`;
 
   return response;
 }
