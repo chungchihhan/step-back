@@ -12,11 +12,14 @@ A frustration loop has been detected or the user has manually requested a step-b
 
 ## Your first step
 
-Find and read the current session's transcript to understand what has been tried:
+Find the current session's transcript and extract a structured context package:
 
-1. Use Bash to find the most recent transcript: `find ~/.claude/projects/ -name "*.jsonl" -not -path "*/subagents/*" -newer ~/.claude/projects/ 2>/dev/null | xargs ls -t 2>/dev/null | head -1`
-2. Read the last 200 lines of that transcript file to see recent activity
-3. Look for the pattern: user complaints → assistant fix attempts → user says it still doesn't work
+```bash
+TRANSCRIPT=$(find ~/.claude/projects/ -name "*.jsonl" -not -path "*/subagents/*" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
+node "$(dirname "$(find ~/.claude/plugins/ -path "*/step-back/*/scripts/serialize-context.js" 2>/dev/null | head -1)")/serialize-context.js" "$TRANSCRIPT"
+```
+
+If the node command fails, fall back to reading the last 200 lines of the transcript file directly with the Read tool. Each line is JSON — look for `"type":"user"` and `"type":"assistant"` entries.
 
 Then analyze according to your agent instructions.
 

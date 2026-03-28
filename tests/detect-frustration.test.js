@@ -31,6 +31,16 @@ describe('processHookInput (unit)', () => {
     assert.ok(result.stopReason.includes('/step-back'), 'Expected /step-back reference');
   });
 
+  it('does not block /step-back commands even when frustrated', () => {
+    const result = processHookInput({
+      prompt: '/step-back',
+      transcript_path: fixture('stuck-loop.jsonl'),
+      hook_event_name: 'UserPromptSubmit',
+    });
+    assert.equal(result.continue, true);
+    assert.equal(result.stopReason, undefined);
+  });
+
   it('does not trigger for mixed session with progress', () => {
     const result = processHookInput({
       prompt: 'Nice, that works. Now add search filtering.',

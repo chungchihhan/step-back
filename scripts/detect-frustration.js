@@ -42,6 +42,10 @@ export function processHookInput(input) {
   if (!config.auto_trigger) return response;
   if (!transcript_path) return response;
 
+  // Don't block /step-back itself — that's the escape hatch
+  const prompt = (input.prompt || '').trim();
+  if (prompt.startsWith('/step-back')) return response;
+
   let turns;
   try {
     turns = readTranscript(transcript_path);
