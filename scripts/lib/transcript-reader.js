@@ -41,17 +41,11 @@ function parseLine(entry) {
     const msg = entry.message;
     if (!msg) return null;
 
-    // Skip system-generated "user" messages (skill loads, hooks, etc.)
-    // Real user messages have userType: "external"
-    if (entry.type === 'user' && entry.userType && entry.userType !== 'external') {
-      return null;
-    }
-
     const role = entry.type;
     const text = extractText(msg.content);
 
-    // Skip messages that look like system/skill content
-    if (role === 'user' && isSystemContent(text)) {
+    // For user messages, only keep genuine human input
+    if (role === 'user' && !isRealUserMessage(text)) {
       return null;
     }
 
@@ -64,6 +58,11 @@ function parseLine(entry) {
   // Format B: { role: "user"|"assistant", content: [...] }
   if (entry.role === 'user' || entry.role === 'assistant') {
     const text = extractText(entry.content);
+
+    if (entry.role === 'user' && !isRealUserMessage(text)) {
+      return null;
+    }
+
     const toolCalls = extractToolCalls(entry.content);
     const timestamp = entry.timestamp;
 
@@ -75,20 +74,34 @@ function parseLine(entry) {
 }
 
 /**
- * Detects system-generated content that shouldn't be treated as real user messages.
- * E.g. skill loading prompts, hook outputs, system reminders.
+ * Determines if a user message is genuine human input vs system noise.
+ * Claude Code transcripts are full of system-generated "user" entries:
+ * empty messages, command tags, skill loads, system reminders, etc.
  */
-function isSystemContent(text) {
-  if (!text) return false;
-  const markers = [
+function isRealUserMessage(text) {
+  // Empty or whitespace-only
+  if (!text || !text.trim()) return false;
+
+  const trimmed = text.trim();
+
+  // XML system tags — commands, caveats, reminders, stdout
+  if (/^<(command-name|local-command|system-reminder)/.test(trimmed)) return false;
+  if (trimmed.startsWith('<local-command-stdout>')) return false;
+
+  // Contains command-name tags anywhere (slash command invocations)
+  if (/<command-name>/.test(trimmed)) return false;
+
+  // System markers
+  const systemMarkers = [
     'Base directory for this skill:',
-    '<system-reminder>',
-    '<local-command-caveat>',
     'Successfully loaded skill',
     'CLAUDE_SKILL_DIR',
     'CLAUDE_PLUGIN_ROOT',
+    '[Request interrupted by user',
   ];
-  return markers.some(marker => text.includes(marker));
+  if (systemMarkers.some(m => trimmed.includes(m))) return false;
+
+  return true;
 }
 
 /**

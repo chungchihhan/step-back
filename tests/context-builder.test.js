@@ -48,4 +48,21 @@ describe('buildContext', () => {
     assert.ok(parsed.attempts);
     assert.ok(parsed.filesTouched);
   });
+
+  it('segments by progress signals — only analyzes the stuck part', () => {
+    const turns = readTranscript(fixture('mixed-session.jsonl'));
+    const ctx = buildContext(turns);
+    // The mixed session ends with "Nice, that works. Now add search filtering."
+    // which is a progress signal. So the current segment should be after that.
+    // The userGoal should be the request AFTER the progress, not the original goal.
+    assert.ok(ctx.segmentTurnCount < ctx.turnCount,
+      `Expected segment (${ctx.segmentTurnCount}) < total (${ctx.turnCount})`);
+  });
+
+  it('includes segmentTurnCount in output', () => {
+    const turns = readTranscript(fixture('stuck-loop.jsonl'));
+    const ctx = buildContext(turns);
+    assert.equal(typeof ctx.segmentTurnCount, 'number');
+    assert.ok(ctx.segmentTurnCount > 0);
+  });
 });
