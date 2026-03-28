@@ -4,16 +4,16 @@
 
 A Claude Code plugin that detects when you're stuck in a fix-it loop, spawns a meta-agent to reason about the root cause at a higher level, confirms the diagnosis with you, then injects structured advice back into the original session.
 
-## Install
+## Installation in Claude Code
 
 ```bash
-claude plugin add step-back
+# Add the marketplace
+/plugin marketplace add chungchihhan/step-back
 ```
 
-Or for local development:
-
 ```bash
-claude --plugin-dir /path/to/step-back
+# Install the plugin
+/plugin install super-resume
 ```
 
 ## Usage
