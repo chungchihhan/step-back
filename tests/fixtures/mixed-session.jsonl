@@ -1,0 +1,10 @@
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Build a REST API for users"}]},"timestamp":"2026-03-22T10:00:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"I'll create the REST API."},{"type":"tool_use","id":"tu_1","name":"Write","input":{"file_path":"src/api/users.ts","content":"router.get('/users', ...)"}}]},"timestamp":"2026-03-22T10:00:05Z"}
+{"type":"tool_result","tool_use_id":"tu_1","content":"File created"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"That's not working, it returns 404"}]},"timestamp":"2026-03-22T10:01:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"The route wasn't registered. Let me add it to the app."},{"type":"tool_use","id":"tu_2","name":"Edit","input":{"file_path":"src/app.ts","old_string":"// routes","new_string":"app.use('/api', usersRouter)"}}]},"timestamp":"2026-03-22T10:01:05Z"}
+{"type":"tool_result","tool_use_id":"tu_2","content":"Edit applied"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"OK that part works now. Can you add pagination?"}]},"timestamp":"2026-03-22T10:02:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"I'll add pagination."},{"type":"tool_use","id":"tu_3","name":"Edit","input":{"file_path":"src/api/users.ts","old_string":"router.get","new_string":"router.get('/users', paginate)"}}]},"timestamp":"2026-03-22T10:02:05Z"}
+{"type":"tool_result","tool_use_id":"tu_3","content":"Edit applied"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Nice, that works. Now add search filtering."}]},"timestamp":"2026-03-22T10:03:00Z"}
