@@ -1,0 +1,7 @@
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Add a user profile page"}]},"timestamp":"2026-03-22T10:00:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"I'll create a user profile page."},{"type":"tool_use","id":"tu_1","name":"Write","input":{"file_path":"src/pages/profile.tsx","content":"export default function Profile() { return <div>Profile</div> }"}}]},"timestamp":"2026-03-22T10:00:05Z"}
+{"type":"tool_result","tool_use_id":"tu_1","content":"File created"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Great, now add an avatar upload component"}]},"timestamp":"2026-03-22T10:01:00Z"}
+{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"I'll add an avatar upload component."},{"type":"tool_use","id":"tu_2","name":"Write","input":{"file_path":"src/components/AvatarUpload.tsx","content":"export function AvatarUpload() { return <input type='file' /> }"}}]},"timestamp":"2026-03-22T10:01:05Z"}
+{"type":"tool_result","tool_use_id":"tu_2","content":"File created"}
+{"type":"user","message":{"role":"user","content":[{"type":"text","text":"Nice. Can you also add form validation?"}]},"timestamp":"2026-03-22T10:02:00Z"}
