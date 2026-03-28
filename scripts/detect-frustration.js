@@ -10,7 +10,6 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { readTranscript } from './lib/transcript-reader.js';
 import { detectFrustration } from './lib/frustration-detector.js';
-import { buildContext } from './lib/context-builder.js';
 
 function loadConfig(cwd) {
   const defaults = {
@@ -54,51 +53,10 @@ export function processHookInput(input) {
 
   if (!detection.triggered) return response;
 
-  // Frustration detected — build context and suggest step-back
-  let context;
-  try {
-    context = buildContext(turns);
-  } catch {
-    return response;
-  }
-
-  const contextSummary = formatContextForInjection(context, detection);
-
-  response.systemMessage = `[step-back] Frustration loop detected (${detection.signalCount} signals). Suggesting meta-analysis...`;
-
-  response.additionalContext = contextSummary;
+  // Frustration detected — notify user to invoke /step-back
+  response.systemMessage = `[step-back] Frustration loop detected (${detection.signalCount} signals since last progress). Type /step-back to get a fresh root-cause analysis from a separate agent.`;
 
   return response;
-}
-
-function formatContextForInjection(context, detection) {
-  return `[STEP-BACK: FRUSTRATION LOOP DETECTED]
-
-A pattern of repeated frustration has been detected (${detection.signalCount} frustration signals, ${detection.signalsSinceLastProgress} consecutive without progress).
-
-You MUST now pause your current approach and perform a step-back meta-analysis. Do NOT attempt another fix of the same kind.
-
-Instead, present the following analysis to the user:
-
-## Context Package
-
-**User's original goal:** ${context.userGoal}
-
-**Attempts so far (${context.attempts.length}):**
-${context.attempts.map(a => `- Attempt ${a.attemptNumber}: ${a.whatWasTried} (files: ${a.filesModified || 'none'}) — user said: "${a.userSaid}"`).join('\n')}
-
-**Files touched:** ${context.filesTouched.join(', ')}
-
-**Latest user complaint:** ${context.currentIssue}
-
-## Your instructions
-
-1. Identify what ALL the failed attempts have in common (the shared assumption)
-2. Hypothesize the root cause — be specific and concrete
-3. Suggest 2-3 approaches that have NOT been tried
-4. List approaches that should NOT be retried
-5. Present this to the user and ask: "Does this match what you're experiencing?"
-6. Wait for user confirmation before proceeding with any new approach`;
 }
 
 // Main: read stdin and output response

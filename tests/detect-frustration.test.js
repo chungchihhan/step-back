@@ -10,34 +10,26 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const fixture = (name) => join(__dirname, 'fixtures', name);
 
 describe('processHookInput (unit)', () => {
-  it('returns continue:true with no action for low frustration', () => {
+  it('returns continue:true with no systemMessage for low frustration', () => {
     const result = processHookInput({
       prompt: 'Can you add pagination?',
       transcript_path: fixture('productive-session.jsonl'),
       hook_event_name: 'UserPromptSubmit',
     });
     assert.equal(result.continue, true);
-    assert.equal(result.additionalContext, undefined);
+    assert.equal(result.systemMessage, undefined);
   });
 
-  it('returns additionalContext when frustration threshold met', () => {
+  it('returns systemMessage when frustration threshold met', () => {
     const result = processHookInput({
       prompt: 'Nothing changed. Fix it please.',
       transcript_path: fixture('stuck-loop.jsonl'),
       hook_event_name: 'UserPromptSubmit',
     });
     assert.equal(result.continue, true);
-    assert.ok(result.additionalContext, 'Expected additionalContext to be set');
-    assert.ok(result.additionalContext.includes('step-back'), 'Expected step-back reference');
-  });
-
-  it('includes systemMessage to alert user', () => {
-    const result = processHookInput({
-      prompt: 'Nothing changed. Fix it please.',
-      transcript_path: fixture('stuck-loop.jsonl'),
-      hook_event_name: 'UserPromptSubmit',
-    });
-    assert.ok(result.systemMessage, 'Expected systemMessage');
+    assert.ok(result.systemMessage, 'Expected systemMessage to be set');
+    assert.ok(result.systemMessage.includes('step-back'), 'Expected step-back reference');
+    assert.ok(result.systemMessage.includes('/step-back'), 'Expected /step-back instruction');
   });
 
   it('does not trigger for mixed session with progress', () => {
@@ -46,7 +38,7 @@ describe('processHookInput (unit)', () => {
       transcript_path: fixture('mixed-session.jsonl'),
       hook_event_name: 'UserPromptSubmit',
     });
-    assert.equal(result.additionalContext, undefined);
+    assert.equal(result.systemMessage, undefined);
   });
 });
 
@@ -59,7 +51,7 @@ describe('processHookInput with config', () => {
       cwd: '/nonexistent',
     });
     assert.equal(result.continue, true);
-    assert.ok(result.additionalContext, 'Should trigger with default threshold of 3');
+    assert.ok(result.systemMessage, 'Should trigger with default threshold of 3');
   });
 
   it('respects auto_trigger: false from config file', () => {
@@ -72,7 +64,7 @@ describe('processHookInput with config', () => {
         hook_event_name: 'UserPromptSubmit',
         cwd: tmpDir,
       });
-      assert.equal(result.additionalContext, undefined, 'Should NOT trigger when auto_trigger is false');
+      assert.equal(result.systemMessage, undefined, 'Should NOT trigger when auto_trigger is false');
     } finally {
       rmSync(tmpDir, { recursive: true });
     }
@@ -88,7 +80,7 @@ describe('processHookInput with config', () => {
         hook_event_name: 'UserPromptSubmit',
         cwd: tmpDir,
       });
-      assert.equal(result.additionalContext, undefined, 'Should NOT trigger with high threshold');
+      assert.equal(result.systemMessage, undefined, 'Should NOT trigger with high threshold');
     } finally {
       rmSync(tmpDir, { recursive: true });
     }
