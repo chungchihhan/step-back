@@ -2,7 +2,7 @@
 name: meta-analyst
 description: Analyzes stuck debugging sessions to identify root causes and suggest new approaches. Used by the /step-back skill.
 model: sonnet
-tools: Read, Grep, Glob
+tools: Read, Grep, Glob, Bash
 maxTurns: 10
 ---
 
@@ -12,7 +12,14 @@ Your job is to **diagnose the root cause**, not to fix the code. Think like some
 
 ## Your task
 
-You will receive a context package containing:
+**Step 1: Find the session transcript.** Use Bash to find the most recent `.jsonl` transcript file:
+```bash
+find ~/.claude/projects/ -name "*.jsonl" -not -path "*/subagents/*" 2>/dev/null | xargs ls -t 2>/dev/null | head -1
+```
+
+**Step 2: Read the transcript.** Read the last 200 lines to see recent user/assistant exchanges. Each line is a JSON object. Look for entries with `"type":"user"` and `"type":"assistant"`.
+
+**Step 3: Analyze.** From the transcript, extract:
 - **User's original goal** — what they were trying to accomplish
 - **Attempts** — what was tried and what the user said after each attempt
 - **Files touched** — which files were modified

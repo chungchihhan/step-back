@@ -10,20 +10,15 @@ agent: meta-analyst
 
 A frustration loop has been detected or the user has manually requested a step-back analysis.
 
-Below is the serialized context package from the current session. Analyze it according to your instructions.
+## Your first step
 
-## Session Context Package
+Find and read the current session's transcript to understand what has been tried:
 
-!`bash ${CLAUDE_SKILL_DIR}/../../scripts/get-session-context.sh`
+1. Use Bash to find the most recent transcript: `find ~/.claude/projects/ -name "*.jsonl" -not -path "*/subagents/*" -newer ~/.claude/projects/ 2>/dev/null | xargs ls -t 2>/dev/null | head -1`
+2. Read the last 200 lines of that transcript file to see recent activity
+3. Look for the pattern: user complaints → assistant fix attempts → user says it still doesn't work
 
-**Note:** If the bash injection syntax above doesn't work, try these alternatives and commit the one that works:
-- `!`${CLAUDE_SKILL_DIR}/../../scripts/get-session-context.sh`` (without `bash` prefix)
-- `!`"${CLAUDE_SKILL_DIR}/../../scripts/get-session-context.sh"`` (quoted path)
-- Inline the script directly in the skill file
-
-## Additional Instructions
-
-If the context package above shows an error or is empty, you still have access to the Read, Grep, and Glob tools. Look at the files in the project to understand what has been worked on and provide your best diagnosis based on what you find.
+Then analyze according to your agent instructions.
 
 After providing your diagnosis, end with: **Does this match what you're experiencing?**
 
