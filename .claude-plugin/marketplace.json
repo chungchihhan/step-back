@@ -4,7 +4,7 @@
     "name": "chungchihhan"
   },
   "metadata": {
-    "description": "Plugins for managing Claude Code sessions",
+    "description": "Detect fix-it loops and step back for root cause analysis",
     "version": "1.0.0"
   },
   "plugins": [
