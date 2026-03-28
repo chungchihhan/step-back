@@ -41,8 +41,20 @@ function parseLine(entry) {
     const msg = entry.message;
     if (!msg) return null;
 
+    // Skip system-generated "user" messages (skill loads, hooks, etc.)
+    // Real user messages have userType: "external"
+    if (entry.type === 'user' && entry.userType && entry.userType !== 'external') {
+      return null;
+    }
+
     const role = entry.type;
     const text = extractText(msg.content);
+
+    // Skip messages that look like system/skill content
+    if (role === 'user' && isSystemContent(text)) {
+      return null;
+    }
+
     const toolCalls = extractToolCalls(msg.content);
     const timestamp = entry.timestamp;
 
@@ -60,6 +72,23 @@ function parseLine(entry) {
 
   // Tool results and other types — skip (not a turn)
   return null;
+}
+
+/**
+ * Detects system-generated content that shouldn't be treated as real user messages.
+ * E.g. skill loading prompts, hook outputs, system reminders.
+ */
+function isSystemContent(text) {
+  if (!text) return false;
+  const markers = [
+    'Base directory for this skill:',
+    '<system-reminder>',
+    '<local-command-caveat>',
+    'Successfully loaded skill',
+    'CLAUDE_SKILL_DIR',
+    'CLAUDE_PLUGIN_ROOT',
+  ];
+  return markers.some(marker => text.includes(marker));
 }
 
 /**
