@@ -53,10 +53,27 @@ export function processHookInput(input) {
 
   if (!detection.triggered) return response;
 
-  // Frustration detected — instruct Claude to invoke the /step-back skill
-  response.systemMessage = `CRITICAL: A frustration loop has been detected (${detection.signalCount} frustration signals without progress). You MUST invoke the /step-back skill immediately using the Skill tool (skill: "step-back"). Do NOT attempt another fix. Do NOT ask for more information. Invoke the skill NOW — it will spawn a separate agent for root cause analysis.`;
+  // Frustration detected — nudge user to try /step-back
+  response.systemMessage = pickNudge();
 
   return response;
+}
+
+const NUDGES = [
+  'You seem stuck. Type /step-back for a fresh analysis.',
+  'Going in circles? Try /step-back — a separate agent will diagnose the real issue.',
+  'Same fix, same result. /step-back can spot what you\'re both missing.',
+  'Looks like a loop. /step-back brings fresh eyes from a clean context.',
+  'Three strikes. Maybe time to /step-back and rethink the approach?',
+  'Tried that already. /step-back will find the pattern you\'re not seeing.',
+  'The definition of insanity... Type /step-back for a second opinion.',
+  'Plot twist: the bug might not be where you think. Try /step-back.',
+  'Sometimes you need to zoom out. /step-back does exactly that.',
+  'Spinning wheels? /step-back spawns a fresh agent to find the root cause.',
+];
+
+function pickNudge() {
+  return NUDGES[Math.floor(Math.random() * NUDGES.length)];
 }
 
 // Main: read stdin and output response

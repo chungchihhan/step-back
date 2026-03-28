@@ -28,8 +28,7 @@ describe('processHookInput (unit)', () => {
     });
     assert.equal(result.continue, true);
     assert.ok(result.systemMessage, 'Expected systemMessage to be set');
-    assert.ok(result.systemMessage.includes('step-back'), 'Expected step-back reference');
-    assert.ok(result.systemMessage.includes('Skill tool'), 'Expected Skill tool instruction');
+    assert.ok(result.systemMessage.includes('/step-back'), 'Expected /step-back reference');
   });
 
   it('does not trigger for mixed session with progress', () => {
